@@ -24,7 +24,7 @@ class Caltech(VisionDataset):
         self.labels = {}
         self.data = []
         labels_counter = 0
-        with open(split + '.txt', 'r') as file:
+        with open(os.getcwd() + '/' + split + '.txt', 'r') as file:
             lines = file.readlines()
             for line in lines:
                 img_path = line.strip()
