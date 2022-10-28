@@ -20,7 +20,22 @@ class Caltech(VisionDataset):
 
         self.split = split # This defines the split you are going to use
                            # (split files are called 'train.txt' and 'test.txt')
-
+        
+        self.labels = {}
+        self.data = []
+        labels_counter = 0
+        with open(split + '.txt', 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                img_path = line.strip()
+                img_label = img_path.split('/')[0]
+                if img_label != 'BACKGROUND_Google':
+                    if img_label not in self.labels:
+                        self.labels[img_label] = labels_counter
+                        labels_counter += 1
+                    image = pil_loader('./101_ObjectCategories/' + img_path)
+                    self.data.append((image, self.labels[img_label]))
+            
         '''
         - Here you should implement the logic for reading the splits files and accessing elements
         - If the RAM size allows it, it is faster to store all data in memory
@@ -39,10 +54,10 @@ class Caltech(VisionDataset):
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
         '''
-
-        image, label = ... # Provide a way to access image and label via index
+        # Provide a way to access image and label via index
                            # Image should be a PIL Image
                            # label can be int
+        image, label = self.data[index]
 
         # Applies preprocessing when accessing the image
         if self.transform is not None:
@@ -55,5 +70,6 @@ class Caltech(VisionDataset):
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        length = ... # Provide a way to get the length (number of elements) of the dataset
+        # Provide a way to get the length (number of elements) of the dataset
+        length = len(self.data)
         return length
